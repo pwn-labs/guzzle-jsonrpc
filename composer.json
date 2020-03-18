@@ -1,5 +1,5 @@
 {
-    "name": "pwnlabs/guzzle-jsonrpc",
+    "name": "pwn-labs/guzzle-jsonrpc",
     "description": "JSON-RPC 2.0 client for Guzzle",
     "license": "MIT",
     "type": "library",
