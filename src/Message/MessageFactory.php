@@ -64,17 +64,29 @@ class MessageFactory implements MessageFactoryInterface
         );
     }
 
-    /**
-     * @param  HttpResponseInterface $response
-     *
-     * @return ResponseInterface
-     */
     public function fromResponse(HttpResponseInterface $response)
     {
+        try {
+            $json = JsonRpc\json_decode((string)$response->getBody(), true) ?: [];
+        } catch (\Exception $e) {
+            $json = [
+                'jsonrpc' => '2.0',
+                'error'   => [
+                    'code'    => -32603,
+                    'message' => sprintf(
+                        'Invalid JSON returned with status code %s: %s',
+                        $response->getStatusCode(),
+                        substr($response->getBody(), 0, 1000)
+                    )
+                ],
+                'id'      => null
+            ];
+        }
+
         return $this->createResponse(
             $response->getStatusCode(),
             $response->getHeaders(),
-            JsonRpc\json_decode((string) $response->getBody(), true) ?: []
+            $json
         );
     }
 
